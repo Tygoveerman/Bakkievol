@@ -14,6 +14,11 @@ const nextConfig: NextConfig = {
   images: {
     // Productafbeeldingen komen straks van het Shopify CDN.
     remotePatterns: [new URL("https://cdn.shopify.com/**")],
+    // Zuinig met Vercel Image Optimization: minder breedtes = minder
+    // transformaties, en geoptimaliseerde beelden 31 dagen cachen (default 4 uur).
+    deviceSizes: [640, 828, 1200, 1920],
+    imageSizes: [48, 96, 128, 256, 384],
+    minimumCacheTTL: 2_678_400,
   },
   turbopack: {
     root: path.resolve(__dirname),

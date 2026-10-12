@@ -13,6 +13,34 @@ const currentMinute = () => Math.floor(Date.now() / 60_000);
 
 type Region = "inside" | "outside" | "unknown";
 
+const REGION_KEY = "bakkievol:regio";
+let regionRequest: Promise<Region> | null = null;
+
+/**
+ * Eén /api/regio-call per bezoek: het antwoord gaat in sessionStorage en
+ * gelijktijdige DeliveryLines delen dezelfde request (scheelt Vercel-
+ * function-invocations).
+ */
+function loadRegion(): Promise<Region> {
+  try {
+    const stored = sessionStorage.getItem(REGION_KEY);
+    if (stored === "inside" || stored === "outside") return Promise.resolve(stored);
+  } catch {}
+
+  regionRequest ??= fetch("/api/regio")
+    .then((response) => (response.ok ? response.json() : null))
+    .then((data: { country: string | null; region: string | null } | null): Region => {
+      if (!data?.country) return "unknown";
+      const region = data.country === "NL" && data.region === "NH" ? "inside" : "outside";
+      try {
+        sessionStorage.setItem(REGION_KEY, region);
+      } catch {}
+      return region;
+    })
+    .catch((): Region => "unknown");
+  return regionRequest;
+}
+
 /**
  * Leverregel onder de bestelknop: "Vandaag geleverd" (voor 11:00 op een
  * leverdag) of "Morgen geleverd". Het levergebied wordt bepaald via de
@@ -24,13 +52,9 @@ export function DeliveryLine({ className = "" }: { className?: string }) {
 
   useEffect(() => {
     let cancelled = false;
-    fetch("/api/regio")
-      .then((response) => (response.ok ? response.json() : null))
-      .then((data: { country: string | null; region: string | null } | null) => {
-        if (cancelled || !data?.country) return;
-        setRegion(data.country === "NL" && data.region === "NH" ? "inside" : "outside");
-      })
-      .catch(() => {});
+    loadRegion().then((loaded) => {
+      if (!cancelled) setRegion(loaded);
+    });
     return () => {
       cancelled = true;
     };
