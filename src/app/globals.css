@@ -1,0 +1,294 @@
+@import "tailwindcss";
+
+/*
+ * Bakkievol design tokens.
+ * Kleuren zijn afgeleid van de bestaande merkidentiteit (navy + oranje).
+ * Oranje:
+ * - accent-500 (#ee8131) = merkoranje: logo, iconen, sterren, decoratie.
+ * - accent-600 = actie-oranje: vlakken met WITTE tekst (knoppen, balken,
+ *   labels). Iets dieper dan merkoranje voor leesbaarheid (3,5:1).
+ * - accent-700 = oranje tekst op wit (AA, 4,6:1).
+ * Groen (success) voor bevestigingen en beschikbaarheid.
+ */
+@theme {
+  --color-navy-50: #f3f6f9;
+  --color-navy-100: #e4eaf0;
+  --color-navy-200: #c9d4df;
+  --color-navy-300: #9fb0c1;
+  --color-navy-500: #52657a;
+  --color-navy-700: #2a4560;
+  --color-navy-800: #1e3549;
+  --color-navy-900: #16293a;
+  --color-navy-950: #0e1c29;
+
+  --color-accent-50: #fff6ee;
+  --color-accent-100: #fde7d4;
+  --color-accent-200: #fbcfa9;
+  --color-accent-500: #ee8131;
+  --color-accent-600: #e2620a;
+  --color-accent-700: #c2540a;
+  --color-accent-800: #a3460a;
+
+  --color-success-50: #ecf8f1;
+  --color-success-600: #16834a;
+  --color-success-700: #10663a;
+  --color-danger-50: #fdf0ef;
+  --color-danger-600: #c0362c;
+
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-inter-tight), var(--font-inter), ui-sans-serif,
+    system-ui, sans-serif;
+
+  --shadow-card: 0 1px 2px rgb(22 41 58 / 0.05),
+    0 12px 32px -16px rgb(22 41 58 / 0.22);
+  --shadow-card-hover: 0 1px 2px rgb(22 41 58 / 0.06),
+    0 20px 40px -18px rgb(22 41 58 / 0.32);
+  --shadow-cta: 0 8px 20px -8px rgb(226 98 10 / 0.6);
+  --shadow-float: 0 2px 4px rgb(14 28 41 / 0.08), 0 32px 64px -24px rgb(14 28 41 / 0.55);
+
+  --animate-rise: rise 0.6s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+
+  @keyframes rise {
+    from {
+      opacity: 0;
+      transform: translateY(12px);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+}
+
+@layer base {
+  html {
+    color: var(--color-navy-900);
+    background: #ffffff;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    html {
+      scroll-behavior: smooth;
+    }
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-accent-700);
+    outline-offset: 3px;
+    border-radius: 6px;
+  }
+
+  ::selection {
+    background: var(--color-accent-200);
+  }
+}
+
+/*
+ * Motion. Alleen actief als <html> de class `motion-ready` heeft (gezet door
+ * een inline script, en alleen zonder prefers-reduced-motion). Zonder JS of
+ * bij "minder beweging" is alles direct zichtbaar.
+ *
+ * - [data-reveal="text"]    titels: letter voor letter, met lichte blur
+ * - [data-reveal="up"]      blok: fade + blur + klein stukje omhoog
+ * - [data-reveal="stagger"] directe kinderen na elkaar
+ * Vertraging per element via de CSS-variabele --d.
+ */
+html.lenis {
+  scroll-behavior: auto !important;
+}
+
+@layer base {
+  :root {
+    --ease-reveal: cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  /* Titels: per woord (of per letter in de hero), 10px blur + 10px omhoog,
+     zachte uitloop van ~1s. Vertraging per eenheid via --t (zie RevealText). */
+  .motion-ready [data-reveal="text"] .rv-char {
+    display: inline-block;
+    opacity: 0;
+    filter: blur(10px);
+    transform: translate3d(0, 10px, 0);
+    transition:
+      opacity 1s var(--ease-reveal),
+      filter 1s var(--ease-reveal),
+      transform 1s var(--ease-reveal);
+    transition-delay: var(--t, 0ms);
+  }
+
+  /* Blokken: alleen opacity + transform (GPU), geen blur → vloeiend scrollen */
+  .motion-ready [data-reveal="up"],
+  .motion-ready [data-reveal="stagger"] > * {
+    opacity: 0;
+    transform: translate3d(0, 16px, 0);
+    transition:
+      opacity 1s var(--ease-reveal),
+      transform 1s var(--ease-reveal);
+    transition-delay: var(--d, 0ms);
+  }
+
+  .motion-ready [data-reveal="stagger"] > * {
+    transition-delay: calc(var(--d, 0ms) + var(--n, 0) * 60ms);
+  }
+  .motion-ready [data-reveal="stagger"] > :nth-child(2) { --n: 1; }
+  .motion-ready [data-reveal="stagger"] > :nth-child(3) { --n: 2; }
+  .motion-ready [data-reveal="stagger"] > :nth-child(4) { --n: 3; }
+  .motion-ready [data-reveal="stagger"] > :nth-child(5) { --n: 4; }
+  .motion-ready [data-reveal="stagger"] > :nth-child(6) { --n: 5; }
+  .motion-ready [data-reveal="stagger"] > :nth-child(7) { --n: 6; }
+  .motion-ready [data-reveal="stagger"] > :nth-child(8) { --n: 7; }
+  .motion-ready [data-reveal="stagger"] > :nth-child(9) { --n: 8; }
+  .motion-ready [data-reveal="stagger"] > :nth-child(n + 10) { --n: 9; }
+
+  .motion-ready [data-reveal="fade"] {
+    opacity: 0;
+    transition: opacity 0.8s var(--ease-reveal);
+    transition-delay: var(--d, 0ms);
+  }
+  .motion-ready [data-reveal="fade"][data-revealed] {
+    opacity: 1;
+  }
+
+  .motion-ready [data-reveal][data-revealed] .rv-char,
+  .motion-ready [data-reveal="up"][data-revealed],
+  .motion-ready [data-reveal="stagger"][data-revealed] > * {
+    opacity: 1;
+    filter: none;
+    transform: none;
+  }
+}
+
+/* Paginawissel en zachte waarde-updates (alleen zonder "minder beweging") */
+@media (prefers-reduced-motion: no-preference) {
+  .page-enter {
+    animation: page-enter 0.7s var(--ease-reveal) both;
+  }
+  .value-swap {
+    animation: value-swap 0.45s var(--ease-reveal) both;
+  }
+}
+
+@keyframes page-enter {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+}
+
+@keyframes value-swap {
+  from {
+    opacity: 0;
+    filter: blur(4px);
+    transform: translateY(6px);
+  }
+}
+
+/*
+ * Logo-animatie (header): typen → VOL springt → .nl schuift aan.
+ * Alles eindigt in de normale staat (animation-fill-mode: both).
+ */
+@media (prefers-reduced-motion: no-preference) {
+  .logo-animated .logo-char {
+    position: relative;
+    display: inline-block;
+    animation: logo-type 0.16s ease-out var(--t) both;
+  }
+  /* Cursor: staat achter de net getypte letter zolang die "actief" is */
+  .logo-animated .logo-char::after {
+    content: "";
+    position: absolute;
+    top: 8%;
+    right: -0.09em;
+    bottom: 8%;
+    width: 0.09em;
+    border-radius: 1px;
+    background: var(--color-accent-500);
+    opacity: 0;
+    animation: logo-caret var(--hold) linear var(--t) both;
+  }
+
+  .logo-animated .logo-vol {
+    display: inline-block;
+    transform-origin: 50% 75%;
+    animation: logo-pop 0.55s cubic-bezier(0.22, 1, 0.36, 1) var(--t) both;
+  }
+  .logo-animated .logo-vol-inner {
+    display: inline-block;
+    transform-origin: 50% 75%;
+    transition: transform 0.45s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+  .logo-animated:hover .logo-vol-inner {
+    transform: scale(1.12) rotate(-3deg);
+  }
+
+  .logo-animated .logo-nl {
+    display: inline-block;
+    animation: logo-nl 0.4s cubic-bezier(0.16, 1, 0.3, 1) var(--t) both;
+  }
+}
+
+@keyframes logo-type {
+  from {
+    opacity: 0;
+    transform: translateY(0.12em);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes logo-caret {
+  0%,
+  99% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes logo-pop {
+  0% {
+    opacity: 0;
+    transform: scale(0.6);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.18);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes logo-nl {
+  from {
+    opacity: 0;
+    transform: translateX(-0.35em);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* Hero (--hero-photo wordt in hero.tsx gezet): zeer vage, vooraf vervaagde
+   foto achter de navy band. Onderaan loopt hij over in effen navy, zodat de
+   overgang naar de widgetlaag niet opvalt. */
+.hero-band::before {
+  background:
+    linear-gradient(to bottom, rgb(22 41 58 / 0.84), rgb(22 41 58 / 0.9) 65%, var(--color-navy-900)),
+    var(--hero-photo) center 55% / max(120vw, 760px) auto no-repeat,
+    var(--color-navy-900);
+}
+
+/* Desktop: de laag is gecentreerd op de tekstkolom (links van het midden),
+   dus de foto is 800px breder dan het scherm om ook rechts de rand te halen. */
+@media (min-width: 64rem) {
+  .hero-band::before {
+    background-size: auto, calc(100vw + 800px) auto;
+  }
+}
