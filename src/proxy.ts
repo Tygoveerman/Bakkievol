@@ -42,7 +42,8 @@ function isAuthorized(request: NextRequest, credentials: string): boolean {
 export function proxy(request: NextRequest) {
   if (process.env.SITE_LIVE === "true") return NextResponse.next();
 
-  const credentials = process.env.TEST_BASIC_AUTH ?? "";
+  // Opschonen: bij plakken in Vercel komen er soms spaties, regeleinden of aanhalingstekens mee.
+  const credentials = (process.env.TEST_BASIC_AUTH ?? "").trim().replace(/^(["'])(.*)\1$/, "$2");
   const onVercel = Boolean(process.env.VERCEL_ENV);
   if (!onVercel && !credentials) return NextResponse.next();
 
