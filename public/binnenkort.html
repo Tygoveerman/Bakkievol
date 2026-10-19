@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="nl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="theme-color" content="#16293a">
+  <title>Bakkievol — Binnenkort online</title>
+  <meta name="description" content="Container huren in Noord-Holland. Onze nieuwe webshop is binnenkort online.">
+  <!--
+    Tijdelijke pagina vóór de lancering. Wordt door src/proxy.ts getoond op
+    alle domeinen die niet in SHOP_HOSTS staan. Statisch, zodat er geen
+    webshop-code of Shopify-aanroep meedraait.
+  -->
+  <style>
+    :root {
+      --navy-50: #f3f6f9; --navy-100: #e4eaf0; --navy-500: #52657a; --navy-900: #16293a;
+      --accent-500: #ee8131; --accent-600: #e2620a;
+    }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; height: 100%; }
+    body {
+      display: flex; flex-direction: column; min-height: 100%;
+      background: var(--navy-50); color: var(--navy-900);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+    .bar { background: var(--accent-600); color: #fff; font-size: 14px; font-weight: 600; text-align: center; padding: 8px 16px; }
+    main { flex: 1; display: flex; align-items: center; justify-content: center; padding: 48px 16px; }
+    .card {
+      width: 100%; max-width: 640px; background: #fff; border-radius: 28px; padding: 48px 32px; text-align: center;
+      box-shadow: 0 1px 2px rgba(22, 41, 58, .06), 0 12px 32px -12px rgba(22, 41, 58, .18);
+      outline: 1px solid var(--navy-100);
+    }
+    .logo { font-size: 26px; font-weight: 800; letter-spacing: -.03em; line-height: 1; }
+    .logo span { color: var(--accent-500); }
+    .logo small { font-size: inherit; font-weight: 700; }
+    img { display: block; width: 100%; max-width: 300px; height: auto; margin: 32px auto 8px; }
+    h1 { margin: 16px 0 0; font-size: clamp(2rem, 6vw, 2.75rem); font-weight: 800; letter-spacing: -.03em; line-height: 1.05; }
+    p { margin: 16px auto 0; max-width: 30rem; color: var(--navy-500); font-size: 17px; line-height: 1.55; }
+    .actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; margin-top: 28px; }
+    .btn {
+      display: inline-flex; align-items: center; gap: 8px; min-height: 48px; padding: 0 22px; border-radius: 999px;
+      font-weight: 700; font-size: 16px; text-decoration: none; transition: background-color .15s;
+    }
+    .btn-primary { background: var(--accent-600); color: #fff; }
+    .btn-primary:hover { background: #c2540a; }
+    .btn-secondary { color: var(--navy-900); outline: 1px solid var(--navy-100); outline-offset: -1px; }
+    .btn-secondary:hover { background: var(--navy-50); }
+    .btn:focus-visible { outline: 2px solid var(--navy-900); outline-offset: 2px; }
+    footer { padding: 24px 16px; text-align: center; font-size: 13px; color: var(--navy-500); }
+  </style>
+</head>
+<body>
+  <div class="bar">Container huren in Noord-Holland — all-in prijzen</div>
+  <main>
+    <div class="card">
+      <div class="logo" aria-label="Bakkievol.nl">BAKKIE<span>VOL</span><small>.nl</small></div>
+      <img src="/images/temp/container-cutout.png" alt="" width="637" height="249">
+      <h1>Onze nieuwe webshop is binnenkort online</h1>
+      <p>We leggen de laatste hand aan een nieuwe manier om je container te bestellen. Tot die tijd helpen we je graag telefonisch of per mail.</p>
+      <div class="actions">
+        <a class="btn btn-primary" href="tel:+31851234563">Bel 085 123 4563</a>
+        <a class="btn btn-secondary" href="mailto:info@bakkievol.nl">info@bakkievol.nl</a>
+      </div>
+    </div>
+  </main>
+  <footer>Ma – za, 07:00 – 20:00 · © Bakkievol</footer>
+</body>
+</html>

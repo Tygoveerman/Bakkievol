@@ -97,3 +97,37 @@ export function getEarliestDeliveryLabel(now: Date): string {
   }
   return "binnenkort";
 }
+
+/** Datum in NL-tijd als YYYY-MM-DD. */
+function toIsoDate(date: Date): string {
+  return new Intl.DateTimeFormat("en-CA", { timeZone: deliveryConfig.timeZone }).format(date);
+}
+
+/** Morgen (NL-tijd) als vroegst kiesbare leverdatum, in YYYY-MM-DD. */
+export function earliestDeliveryDate(now: Date): string {
+  return toIsoDate(new Date(now.getTime() + 24 * 60 * 60 * 1000));
+}
+
+export type DeliveryDateResult = "ok" | "invalid" | "too-early" | "no-delivery-day";
+
+/** Controle van een gekozen leverdatum (ook server-side gebruikt). */
+export function checkDeliveryDate(iso: string, now: Date): DeliveryDateResult {
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(iso)) return "invalid";
+  const date = new Date(`${iso}T12:00:00Z`);
+  if (Number.isNaN(date.getTime()) || date.toISOString().slice(0, 10) !== iso) return "invalid";
+  if (iso < earliestDeliveryDate(now)) return "too-early";
+  // Niet verder dan een jaar vooruit.
+  if (iso > toIsoDate(new Date(now.getTime() + 366 * 24 * 60 * 60 * 1000))) return "invalid";
+  if (!deliveryConfig.deliveryDays.includes(date.getUTCDay())) return "no-delivery-day";
+  return "ok";
+}
+
+/**
+ * Zijn de bestelgegevens op de winkelwagen compleet en geldig? Postcode in
+ * het levergebied en, bij een gekozen datum, een geldige leverdatum.
+ */
+export function isDeliveryComplete(attributes: Record<string, string>, now: Date): boolean {
+  if (!attributes.Postcode || checkPostcode(attributes.Postcode) !== "deliverable") return false;
+  if (attributes.Leverdatum && checkDeliveryDate(attributes.Leverdatum, now) !== "ok") return false;
+  return true;
+}

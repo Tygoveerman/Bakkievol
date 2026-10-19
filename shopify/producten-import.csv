@@ -1,0 +1,37 @@
+Handle,Title,Body (HTML),Vendor,Product Category,Type,Tags,Published,Option1 Name,Option1 Value,Variant SKU,Variant Grams,Variant Inventory Tracker,Variant Inventory Qty,Variant Inventory Policy,Variant Fulfillment Service,Variant Price,Variant Compare At Price,Variant Requires Shipping,Variant Taxable,Variant Weight Unit,Status
+bouw-en-sloopafval-container,Bouw- en sloopafval,<p>Gemengd afval uit verbouwing of renovatie.</p>,Bakkievol,,Verbouwen,featured,TRUE,Formaat,3 m³,BV-bouw-en-sloopafval-container-3,0,,,deny,manual,279.00,,TRUE,TRUE,kg,active
+bouw-en-sloopafval-container,,,,,,,,,6 m³,BV-bouw-en-sloopafval-container-6,0,,,deny,manual,370.00,,TRUE,TRUE,kg,
+bouw-en-sloopafval-container,,,,,,,,,10 m³,BV-bouw-en-sloopafval-container-10,0,,,deny,manual,449.00,,TRUE,TRUE,kg,
+bouw-en-sloopafval-container,,,,,,,,,15 m³,BV-bouw-en-sloopafval-container-15,0,,,deny,manual,689.00,,TRUE,TRUE,kg,
+bouw-en-sloopafval-container,,,,,,,,,20 m³,BV-bouw-en-sloopafval-container-20,0,,,deny,manual,789.00,,TRUE,TRUE,kg,
+grofvuil-container,Grofvuil,"<p>Meubels, huisraad en groot gemengd afval.</p>",Bakkievol,,Opruimen,featured,TRUE,Formaat,3 m³,BV-grofvuil-container-3,0,,,deny,manual,299.00,,TRUE,TRUE,kg,active
+grofvuil-container,,,,,,,,,6 m³,BV-grofvuil-container-6,0,,,deny,manual,399.00,,TRUE,TRUE,kg,
+grofvuil-container,,,,,,,,,10 m³,BV-grofvuil-container-10,0,,,deny,manual,489.00,,TRUE,TRUE,kg,
+grofvuil-container,,,,,,,,,15 m³,BV-grofvuil-container-15,0,,,deny,manual,729.00,,TRUE,TRUE,kg,
+grofvuil-container,,,,,,,,,20 m³,BV-grofvuil-container-20,0,,,deny,manual,829.00,,TRUE,TRUE,kg,
+puinafval-container,Puin,"<p>Stenen, beton, tegels en schoon puin.</p>",Bakkievol,,Verbouwen,featured,TRUE,Formaat,3 m³,BV-puinafval-container-3,0,,,deny,manual,239.00,,TRUE,TRUE,kg,active
+puinafval-container,,,,,,,,,6 m³,BV-puinafval-container-6,0,,,deny,manual,329.00,,TRUE,TRUE,kg,
+groenafval-container,Groenafval,"<p>Bladeren, gras, takken en snoeiafval.</p>",Bakkievol,,Tuin & grond,featured,TRUE,Formaat,3 m³,BV-groenafval-container-3,0,,,deny,manual,209.00,,TRUE,TRUE,kg,active
+groenafval-container,,,,,,,,,6 m³,BV-groenafval-container-6,0,,,deny,manual,279.00,,TRUE,TRUE,kg,
+groenafval-container,,,,,,,,,10 m³,BV-groenafval-container-10,0,,,deny,manual,359.00,,TRUE,TRUE,kg,
+groenafval-container,,,,,,,,,15 m³,BV-groenafval-container-15,0,,,deny,manual,499.00,,TRUE,TRUE,kg,
+houtafval-a-container,Houtafval (A-hout),<p>Schoon en onbehandeld hout.</p>,Bakkievol,,Hout,featured,TRUE,Formaat,3 m³,BV-houtafval-a-container-3,0,,,deny,manual,199.00,,TRUE,TRUE,kg,active
+houtafval-a-container,,,,,,,,,6 m³,BV-houtafval-a-container-6,0,,,deny,manual,269.00,,TRUE,TRUE,kg,
+houtafval-a-container,,,,,,,,,10 m³,BV-houtafval-a-container-10,0,,,deny,manual,349.00,,TRUE,TRUE,kg,
+houtafval-a-container,,,,,,,,,15 m³,BV-houtafval-a-container-15,0,,,deny,manual,489.00,,TRUE,TRUE,kg,
+houtafval-a-container,,,,,,,,,20 m³,BV-houtafval-a-container-20,0,,,deny,manual,589.00,,TRUE,TRUE,kg,
+schone-grond-container,Schone grond,<p>Aarde en zand zonder vervuiling.</p>,Bakkievol,,Tuin & grond,featured,TRUE,Formaat,3 m³,BV-schone-grond-container-3,0,,,deny,manual,219.00,,TRUE,TRUE,kg,active
+schone-grond-container,,,,,,,,,6 m³,BV-schone-grond-container-6,0,,,deny,manual,309.00,,TRUE,TRUE,kg,
+houtafval-c-container,Houtafval (C-hout),<p>Behandeld of geïmpregneerd hout.</p>,Bakkievol,,Hout,,TRUE,Formaat,3 m³,BV-houtafval-c-container-3,0,,,deny,manual,229.00,,TRUE,TRUE,kg,active
+houtafval-c-container,,,,,,,,,6 m³,BV-houtafval-c-container-6,0,,,deny,manual,299.00,,TRUE,TRUE,kg,
+houtafval-c-container,,,,,,,,,10 m³,BV-houtafval-c-container-10,0,,,deny,manual,389.00,,TRUE,TRUE,kg,
+houtafval-c-container,,,,,,,,,15 m³,BV-houtafval-c-container-15,0,,,deny,manual,549.00,,TRUE,TRUE,kg,
+houtafval-c-container,,,,,,,,,20 m³,BV-houtafval-c-container-20,0,,,deny,manual,649.00,,TRUE,TRUE,kg,
+gemengd-groenafval-container,Gemengd groenafval,<p>Tuinafval gemengd met groene resten.</p>,Bakkievol,,Tuin & grond,,TRUE,Formaat,3 m³,BV-gemengd-groenafval-container-3,0,,,deny,manual,229.00,,TRUE,TRUE,kg,active
+gemengd-groenafval-container,,,,,,,,,6 m³,BV-gemengd-groenafval-container-6,0,,,deny,manual,299.00,,TRUE,TRUE,kg,
+gemengd-groenafval-container,,,,,,,,,10 m³,BV-gemengd-groenafval-container-10,0,,,deny,manual,379.00,,TRUE,TRUE,kg,
+gemengde-grond-container,Gemengde grond,<p>Grond gemengd met andere materialen.</p>,Bakkievol,,Tuin & grond,,TRUE,Formaat,3 m³,BV-gemengde-grond-container-3,0,,,deny,manual,259.00,,TRUE,TRUE,kg,active
+gemengde-grond-container,,,,,,,,,6 m³,BV-gemengde-grond-container-6,0,,,deny,manual,359.00,,TRUE,TRUE,kg,
+dakafval-container,Dakafval,"<p>Dakleer, bitumen en dakmaterialen.</p>",Bakkievol,,Verbouwen,,TRUE,Formaat,3 m³,BV-dakafval-container-3,0,,,deny,manual,319.00,,TRUE,TRUE,kg,active
+dakafval-container,,,,,,,,,6 m³,BV-dakafval-container-6,0,,,deny,manual,449.00,,TRUE,TRUE,kg,
+dakafval-container,,,,,,,,,10 m³,BV-dakafval-container-10,0,shopify,0,deny,manual,599.00,,TRUE,TRUE,kg,

@@ -10,8 +10,8 @@ import { Icon } from "@/components/ui/icon";
 import { PaymentMethods } from "@/components/ui/payment-methods";
 import { includedInPrice } from "@/content/home";
 import { formatMoney, getCart, getFeaturedProducts, type Cart } from "@/lib/commerce";
-import { removeFromCartAction, updateCartLineAction } from "@/lib/commerce/actions";
-import { deliveryConfig } from "@/lib/delivery";
+import { checkoutAction, removeFromCartAction, updateCartLineAction } from "@/lib/commerce/actions";
+import { earliestDeliveryDate, isDeliveryComplete } from "@/lib/delivery";
 import { routes } from "@/lib/routes";
 import { siteConfig } from "@/lib/site";
 
@@ -47,7 +47,8 @@ async function CartContents() {
   if (cart.lines.length === 0) return <EmptyCart />;
 
   const attributes = Object.fromEntries(cart.attributes.map((a) => [a.key, a.value]));
-  const deliveryDone = Boolean(attributes.Postcode);
+  const now = new Date();
+  const deliveryDone = isDeliveryComplete(attributes, now);
 
   return (
     <>
@@ -132,20 +133,28 @@ async function CartContents() {
             <h2 id="delivery-title" className="sr-only">
               Levering
             </h2>
-            <DeliveryForm defaults={attributes} minDate={earliestDeliveryDate()} />
+            <DeliveryForm defaults={attributes} minDate={earliestDeliveryDate(now)} />
           </section>
         </div>
 
         {/* Overzicht */}
         <aside className="lg:sticky lg:top-28 lg:col-span-4">
-          <Summary cart={cart} attributes={attributes} />
+          <Summary cart={cart} attributes={attributes} deliveryDone={deliveryDone} />
         </aside>
       </div>
     </>
   );
 }
 
-function Summary({ cart, attributes }: { cart: Cart; attributes: Record<string, string> }) {
+function Summary({
+  cart,
+  attributes,
+  deliveryDone,
+}: {
+  cart: Cart;
+  attributes: Record<string, string>;
+  deliveryDone: boolean;
+}) {
   return (
     <div className="rounded-3xl bg-white p-5 shadow-card ring-1 ring-navy-100 sm:p-6">
       <h2 className="font-display text-lg font-bold text-navy-900">Overzicht</h2>
@@ -188,11 +197,13 @@ function Summary({ cart, attributes }: { cart: Cart; attributes: Record<string, 
         </dl>
       )}
 
-      {cart.checkoutUrl ? (
-        <a href={cart.checkoutUrl} className={buttonStyles({ size: "lg", className: "mt-5 w-full" })}>
-          <Icon name="shield" className="size-5" />
-          Veilig afrekenen
-        </a>
+      {cart.checkoutUrl && deliveryDone ? (
+        <form action={checkoutAction}>
+          <button type="submit" className={buttonStyles({ size: "lg", className: "mt-5 w-full" })}>
+            <Icon name="shield" className="size-5" />
+            Veilig afrekenen
+          </button>
+        </form>
       ) : (
         <>
           <button
@@ -205,7 +216,9 @@ function Summary({ cart, attributes }: { cart: Cart; attributes: Record<string, 
             Veilig afrekenen
           </button>
           <p id="checkout-note" className="mt-2 text-center text-xs text-navy-500">
-            Afrekenen via Shopify Checkout wordt binnenkort gekoppeld.
+            {cart.checkoutUrl
+              ? "Vul eerst je leveringsgegevens in en sla ze op."
+              : "Afrekenen via Shopify Checkout wordt binnenkort gekoppeld."}
           </p>
         </>
       )}
@@ -334,12 +347,6 @@ function formatDate(iso: string) {
   const date = new Date(`${iso}T12:00:00`);
   if (Number.isNaN(date.getTime())) return iso;
   return new Intl.DateTimeFormat("nl-NL", { weekday: "short", day: "numeric", month: "long" }).format(date);
-}
-
-/** Morgen (NL-tijd) als vroegst kiesbare datum, in YYYY-MM-DD. */
-function earliestDeliveryDate() {
-  const tomorrow = new Date(Date.now() + 24 * 60 * 60 * 1000);
-  return new Intl.DateTimeFormat("en-CA", { timeZone: deliveryConfig.timeZone }).format(tomorrow);
 }
 
 function CartSkeleton() {

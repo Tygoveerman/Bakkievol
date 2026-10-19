@@ -83,7 +83,7 @@ export function DeliveryForm({
             </span>
           ) : check === "outside" ? (
             <span className="text-navy-700">
-              Buiten ons vaste levergebied. Bel {siteConfig.contact.phone}, vaak kan het toch.
+              Hier leveren we niet online. Bel {siteConfig.contact.phone}, dan kijken we wat er kan.
             </span>
           ) : null}
         </p>

@@ -1,14 +1,27 @@
 "use server";
 
+import { refresh } from "next/cache";
 import { redirect } from "next/navigation";
 
-import { checkPostcode } from "@/lib/delivery";
+import { checkDeliveryDate, checkPostcode, isDeliveryComplete } from "@/lib/delivery";
+import { routes } from "@/lib/routes";
+import { siteConfig } from "@/lib/site";
 
-import { addToCart, removeFromCart, updateCartAttributes, updateCartLine } from "./cart";
+import {
+  addToCart,
+  getCart,
+  removeFromCart,
+  setDeliveryPostcode,
+  updateCartAttributes,
+  updateCartLine,
+} from "./cart";
 
 /**
  * Server Actions voor de winkelwagen. Formulieren in de UI posten hierheen,
  * zodat toevoegen/aanpassen ook zonder client-side JavaScript werkt.
+ *
+ * De cart leeft in Shopify, dus een mutatie zet niet altijd een cookie;
+ * `refresh()` zorgt dat header-teller en winkelwagen direct bijwerken.
  */
 
 export async function addToCartAction(formData: FormData): Promise<void> {
@@ -25,6 +38,7 @@ export async function updateCartLineAction(formData: FormData): Promise<void> {
   if (typeof lineId !== "string" || !Number.isInteger(quantity)) return;
 
   await updateCartLine(lineId, quantity);
+  refresh();
 }
 
 export async function removeFromCartAction(formData: FormData): Promise<void> {
@@ -32,6 +46,7 @@ export async function removeFromCartAction(formData: FormData): Promise<void> {
   if (typeof lineId !== "string") return;
 
   await removeFromCart(lineId);
+  refresh();
 }
 
 export type AddToCartState =
@@ -60,6 +75,7 @@ export async function addToCartInlineAction(
       message: "Deze container is nu niet beschikbaar. Bel ons, we denken graag mee.",
     };
   }
+  refresh();
   return { status: "success", variantId, id: crypto.randomUUID() };
 }
 
@@ -82,10 +98,26 @@ export async function saveDeliveryAction(
   if (check === "invalid") {
     return { status: "error", field: "postcode", message: "Vul een geldige postcode in, bijv. 1811 AB." };
   }
-  if (timing === "date" && !/^\d{4}-\d{2}-\d{2}$/.test(date)) {
-    return { status: "error", field: "date", message: "Kies een leverdatum." };
+  if (check === "outside") {
+    return {
+      status: "error",
+      field: "postcode",
+      message: `Helaas, op deze postcode leveren we niet online. Bel ${siteConfig.contact.phone}, dan kijken we wat er kan.`,
+    };
+  }
+  if (timing === "date") {
+    const dateCheck = checkDeliveryDate(date, new Date());
+    if (dateCheck !== "ok") {
+      const messages = {
+        invalid: "Kies een leverdatum.",
+        "too-early": "Kies een datum vanaf morgen. Vandaag nog? Kies dan ‘Zo snel mogelijk’.",
+        "no-delivery-day": "Op zondag leveren we niet. Kies een dag van maandag t/m zaterdag.",
+      };
+      return { status: "error", field: "date", message: messages[dateCheck] };
+    }
   }
 
+  // Eén leverdatum per bestelling: de gegevens staan op de hele winkelwagen.
   await updateCartAttributes({
     Postcode: postcode,
     Levering: timing === "date" ? "Op gekozen datum" : "Zo snel mogelijk",
@@ -93,5 +125,22 @@ export async function saveDeliveryAction(
     Plaatsing: get("placement") === "openbare-weg" ? "Openbare weg (vergunning nodig)" : "Eigen terrein / oprit",
     Opmerking: get("notes"),
   });
+  await setDeliveryPostcode(postcode);
+  refresh();
   return { status: "saved" };
+}
+
+/**
+ * Naar de Shopify-checkout. Controleert server-side of de levergegevens
+ * compleet en geldig zijn (postcode in het levergebied, geldige datum);
+ * anders terug naar de winkelwagen.
+ */
+export async function checkoutAction(): Promise<void> {
+  const cart = await getCart();
+  const attributes = Object.fromEntries(cart.attributes.map((a) => [a.key, a.value]));
+
+  if (cart.lines.length === 0 || !cart.checkoutUrl || !isDeliveryComplete(attributes, new Date())) {
+    redirect(routes.cart);
+  }
+  redirect(cart.checkoutUrl);
 }

@@ -1,8 +1,8 @@
 # Bakkievol webshop
 
 Headless storefront voor Bakkievol. Next.js (App Router), TypeScript, Tailwind CSS.
-Shopify wordt later de backend (producten, voorraad, cart, checkout, betalingen, orders).
-Voorlopig draait alles op lokale mock-data.
+Shopify is de backend (producten, prijzen, cart, checkout, betalingen, orders) via de
+Storefront API. Zonder Storefront-token draait de site op lokale mock-data.
 
 ## Lokaal draaien
 
@@ -68,9 +68,33 @@ Afbeeldingen in `public/images/temp/` zijn tijdelijk uit screenshots van de oude
 - Productdata wordt gecachet met `'use cache'` + `cacheTag('products')`, zodat een Shopify-webhook later gericht kan revalideren.
 - Afrekenen bouwen we niet zelf. `Cart.checkoutUrl` wordt de Shopify-checkout.
 
-## Shopify koppelen (later)
+## Shopify
 
-1. Vul de `SHOPIFY_*`-variabelen in `.env.local` en in Vercel in.
-2. Vervang de bodies in `lib/commerce/products.ts` en `lib/commerce/cart.ts` door Storefront API-queries/mutations. De signaturen blijven gelijk.
-3. In `cart.ts` bewaart de cookie dan alleen het Shopify cart-ID.
-4. Verwijder `lib/mock-data`.
+- **Omgeving**: `NEXT_PUBLIC_SHOPIFY_STOREFRONT_TOKEN` (openbaar token, Headless-kanaal), optioneel
+  `SHOPIFY_STORE_DOMAIN` (standaard `b1a9qw-p2.myshopify.com`) en `SHOPIFY_STOREFRONT_API_VERSION`
+  (standaard `2026-10`). Het token wordt alleen server-side gebruikt (`lib/commerce/shopify.ts`).
+- **Producten**: één product per afvalsoort, optie `Formaat`, handles gelijk aan `content/catalog.ts`.
+  Producttype = categorie, tag `featured` = uitgelicht. `shopify/producten-import.csv` is de
+  startimport (prijzen gelijk aan de oude site). Producten moeten in het **Headless**-verkoopkanaal staan.
+- **Redactioneel** (wat mag erin, label, tijdelijke afbeeldingen) staat in `content/catalog.ts`.
+  Afbeeldingen uit Shopify gaan voor.
+- **Winkelwagen**: de cookie bevat alleen het Shopify cart-ID. Prijzen komen altijd uit Shopify.
+- **Levering**: postcode, leverdatum, plaatsing en opmerking zijn cart-attributen en staan in de
+  order onder "Aanvullende gegevens". Eén leverdatum per bestelling. Postcodes buiten het levergebied
+  en ongeldige datums worden server-side geweigerd; `checkoutAction` controleert dit opnieuw vóór
+  de doorverwijzing naar de checkout. De postcode wordt vooraf ingevuld in de checkout.
+- **Checkout**: standaard Shopify-checkout; het domein bepaalt Shopify (`checkout.bakkievol.nl`).
+
+## Testfase vóór de lancering
+
+`src/proxy.ts` stuurt op domein (één Vercel-project). Veilig-standaard: op Vercel ziet iedereen
+`public/binnenkort.html`, tenzij het volgende is ingesteld:
+
+- `SHOP_HOSTS=test.bakkievol.nl` **én** `TEST_BASIC_AUTH=gebruiker:wachtwoord`: daar draait de
+  webshop achter een browser-inlog. Zonder wachtwoord blijft ook het testdomein dicht.
+- Alle andere domeinen (bakkievol.nl, www, *.vercel.app) tonen de tijdelijke pagina.
+- Overal `X-Robots-Tag: noindex` en een `robots.txt` die alles blokkeert.
+- Lokaal zonder `SHOP_HOSTS` is de proxy uit.
+
+**Lancering:** zet `SITE_LIVE=true` en `NEXT_PUBLIC_SITE_URL=https://bakkievol.nl` in Vercel, verwijder
+`SHOP_HOSTS`/`TEST_BASIC_AUTH` en deploy opnieuw. Daarna kunnen proxy en `binnenkort.html` weg.
