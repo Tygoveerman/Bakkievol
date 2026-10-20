@@ -85,16 +85,3 @@ Afbeeldingen in `public/images/temp/` zijn tijdelijk uit screenshots van de oude
   de doorverwijzing naar de checkout. De postcode wordt vooraf ingevuld in de checkout.
 - **Checkout**: standaard Shopify-checkout; het domein bepaalt Shopify (`checkout.bakkievol.nl`).
 
-## Toegangsbeveiliging vóór de lancering
-
-`src/proxy.ts` schermt op Vercel **elk** domein af met Basic Auth (bakkievol.nl, www, *.vercel.app,
-deployment-URL's). Veilig-standaard:
-
-- `TEST_BASIC_AUTH=gebruiker:wachtwoord` (alleen in Vercel): de inlog. Ontbreekt hij, dan geeft de
-  site 503 in plaats van open te staan.
-- Overal `X-Robots-Tag: noindex`; `/robots.txt` (zonder inlog) blokkeert alles.
-- Niet afgeschermd: gehashte build-assets (`/_next/static`) en het favicon.
-- Lokaal zonder `TEST_BASIC_AUTH` is de proxy uit.
-
-**Lancering:** zet `SITE_LIVE=true` en `NEXT_PUBLIC_SITE_URL=https://bakkievol.nl` in Vercel en deploy
-opnieuw. Daarna kan de proxy weg.
